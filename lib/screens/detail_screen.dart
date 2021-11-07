@@ -4,6 +4,8 @@ import 'package:tomato_movie/models/Actor.dart';
 import 'package:tomato_movie/models/Movie.dart';
 import 'package:tomato_movie/service/MovieService.dart';
 import 'package:tomato_movie/widgets/ActorTile.dart';
+import 'package:tomato_movie/widgets/Section.dart';
+import 'package:tomato_movie/widgets/ContentTile.dart';
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({ Key? key }) : super(key: key);
@@ -13,6 +15,8 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   var _service = MovieService();
+  final ScrollController _sliverScrollController = ScrollController();
+  bool _isPinned = false;
 
   Widget _actorList(actors) {   
     return Container(
@@ -28,26 +32,81 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
+  Widget _contentList(movies) {
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: movies.length,
+      itemBuilder: (BuildContext context, int index) {
+        return ContentTile(movies[index]);
+      }
+    );
+  }
+
+
+
+
+  @override
+  void initState() {
+    super.initState();
+      _sliverScrollController.addListener(() {
+        if (!_isPinned &&
+          _sliverScrollController.hasClients &&
+          _sliverScrollController.offset >= kToolbarHeight + 50) {
+
+          setState(() {
+            _isPinned = true;
+          });
+        } else if (_isPinned &&
+          _sliverScrollController.hasClients &&
+          _sliverScrollController.offset < kToolbarHeight + 50) {
+
+          setState(() {
+            _isPinned = false;
+          });
+        }
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
 
     return Scaffold(
-        resizeToAvoidBottomInset: false,
         body: CustomScrollView(
+          controller: _sliverScrollController,
           slivers: [
             SliverAppBar(
+              pinned: true,
+              collapsedHeight: 60,
               expandedHeight: 200,
-              flexibleSpace: Stack(children: [
-                Positioned.fill(child: Image.network(arguments['posterPath'],fit: BoxFit.cover))
-              ]),
+              flexibleSpace: LayoutBuilder(builder: (context,constraints) {
+                return FlexibleSpaceBar(
+                  title: Text(
+                    arguments['title'],
+                    style: TextStyle(
+                      fontSize: 16,
+                      shadows: <Shadow>[
+                        Shadow(
+                          blurRadius: 10.0,
+                          color: Colors.black,
+                          offset: Offset(2.5, 2.5),
+                        )
+                      ]
+                    )
+                  ),
+                  background: Image.network(arguments['backdropPath'],fit: BoxFit.cover)
+                );
+              }) 
             ),
             SliverFillRemaining(
               fillOverscroll: true,
-              child: FutureBuilder(
+              child: Container(child:FutureBuilder(
                 future: Future.wait([
                   _service.requestMovie(arguments['id']),
-                  _service.requestCredits(arguments['id'])
+                  _service.requestCredits(arguments['id']),
+                  _service.requestSimilar(arguments['id']),
+                  _service.requestRecommendations(arguments['id']),
                 ]),
                 builder: (context,AsyncSnapshot<List<dynamic>>snapshot) {
                   if(!snapshot.hasData) {
@@ -58,9 +117,12 @@ class _DetailScreenState extends State<DetailScreen> {
                   } else {
                     final movie = snapshot.data?[0] as Movie;
                     final actors = snapshot.data?[1] as List<Actor>;
-                    return   Column(
+                    final similarMovies = snapshot.data?[2] as List<Movie>;
+                    final recommendations = snapshot.data?[3] as List<Movie>;
+                    print(similarMovies);
+                    return Padding(padding: EdgeInsets.only(top:32),child:Column(
                       children: [
-                        Padding(padding: EdgeInsets.only(top:21),child: Container(child: Image.network(arguments['posterPath']),width: 300,height:200)),
+                        Padding(padding: EdgeInsets.only(top: 0),child: Container(child: Image.network(arguments['posterPath']),height:180)),
                         Text(arguments['title'],style:TextStyle(fontWeight: FontWeight.bold,fontSize: 18)),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -71,14 +133,33 @@ class _DetailScreenState extends State<DetailScreen> {
                         ),
                         Padding(
                           padding: EdgeInsets.only(top:8,left:32,right:32,bottom:10),
-                          child: Text(movie.overview as String,)
+                          child: Text(
+                            movie.overview as String,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 5,
+                          )
                         ),
-                        Container(padding: EdgeInsets.only(top: 16),child:_actorList(actors),height: 180)
+                        Container(
+                          margin: EdgeInsets.only(top:16),
+                          padding: EdgeInsets.only(top: 16),
+                          child: new Section('Casting', SizedBox(child: _actorList(actors),height: 130,)),
+                        ),
+                        _isPinned ?  
+                          Container(margin: EdgeInsets.only(top:16),child: Stack(children: [
+                            Container(child:new Section("Similar Movies", SizedBox(child: _contentList(similarMovies),height: 130))),
+                          ])): 
+                          Container(
+                            child:Icon(Icons.arrow_downward,color: Colors.black87),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black87),
+                              borderRadius: BorderRadius.circular(10)
+                            )
+                          ),
                       ],
-                    );
+                    ));
                   }
                 },
-              )
+              ))
             )
           ],
         ),

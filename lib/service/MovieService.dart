@@ -56,7 +56,7 @@ class MovieService {
       var actors = (results as List).map((actor) {
         return Actor.fromJson(actor);
       });
-      return actors.toList().sublist(0,6);
+      return actors.toList().sublist(0,10);
     } else {
       return Future.error("Can not get Movie List data");
     }

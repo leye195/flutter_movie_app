@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class ActorTile extends StatelessWidget {
   final _actor;
-
   const ActorTile(this._actor);
 
   @override
@@ -14,10 +13,22 @@ class ActorTile extends StatelessWidget {
               child:  
                 Column(
                   children: [
-                  _actor.profilePath != null? 
-                    Container(child:Image.network(_actor.profilePath),width:70,height: 70):
-                    Container(width: 70,height: 70,color: Colors.black12),
-                  Text(_actor.name)
+                  _actor.profilePath.toString().isNotEmpty ? 
+                    Container(child:Image.network(_actor.profilePath),width:80,height: 80):
+                    Container(width: 80,height: 80,color: Colors.black12),
+                  Container(
+                    child: Text(
+                      _actor.name,
+                      textAlign: TextAlign.center, 
+                      style: TextStyle(
+                        fontSize: 10, 
+                        fontWeight: FontWeight.bold
+                      ),
+                      maxLines: 2
+                    ),
+                    width: 50,
+                    height: 25
+                  )
                 ]
               )
             )
