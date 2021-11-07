@@ -149,7 +149,12 @@ class _DetailScreenState extends State<DetailScreen> {
                           margin: EdgeInsets.only(bottom: 32),
                           padding: EdgeInsets.only(top: 16),
                           child:new Section("Similar Movies", SizedBox(child: _contentList(similarMovies),height: 130))
-                        ),                          
+                        ),
+                        if(recommendations.length > 0) Container(                        
+                          margin: EdgeInsets.only(bottom:64),
+                          padding: EdgeInsets.only(top: 16),
+                          child:new Section("Recommendations", SizedBox(child: _contentList(recommendations),height: 130))
+                        ),
                       ],
                     ));
                   }
