@@ -15,6 +15,7 @@ class MovieTile extends StatelessWidget {
               'id': _movie.id,
               'title': _movie.title,
               'posterPath': _movie.posterPath,
+              'backdropPath': _movie.backdropPath,
               'voteAvg': _movie.voteAvg
             });
           },
