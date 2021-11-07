@@ -1,25 +1,30 @@
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:tomato_movie/models/Actor.dart';
 import 'dart:convert';
 import 'dart:async';
-import 'package:tomato_movie/models/Movie.dart';
 import 'api_info.dart';
+import 'package:tomato_movie/models/Actor.dart';
+import 'package:tomato_movie/models/Movie.dart';
+
+List<Movie> parseMovies(String responseBody) {
+  final json = jsonDecode(responseBody);
+  final results = json['results'];
+  return (results as List).map<Movie>((movie) {
+      return Movie.fromJson(movie);
+  }).toList();
+}
 
 class MovieService {
   Future<List<Movie>> requestMovies() async {
+    
     String url = getURL("/movie/now_playing");
 
     var response = await http.get(Uri.parse(url));
     var statusCode = response.statusCode;
-
-    String responseBody = utf8.decode(response.bodyBytes);
-    var json = jsonDecode(responseBody);
     if(statusCode == 200) {
-      var results = json['results'];
-      var movies = (results as List).map((movie) {
-        return Movie.fromJson(movie);
-      });
-      return movies.toList();
+      String responseBody = utf8.decode(response.bodyBytes);
+      print(compute(parseMovies,responseBody));
+      return parseMovies(responseBody);
     } else {
       return Future.error("Can not get Movie List data");
     }
@@ -35,8 +40,7 @@ class MovieService {
     var json = jsonDecode(responseBody);
     
     if(statusCode == 200) {
-      var movie = Movie.fromJson(json);
-
+      final movie = Movie.fromJson(json);
       return movie;
     } else {
       return Future.error("Can not get Movie data");
@@ -66,15 +70,9 @@ class MovieService {
     String url = getURL('/movie/$id/recommendations');
     var response = await http.get(Uri.parse(url));
     var statusCode = response.statusCode;
-
-    String responseBody = utf8.decode(response.bodyBytes);
-    var json = jsonDecode(responseBody);
     if(statusCode == 200) {
-      var results = json['results'];
-      var movies = (results as List).map((movie) {
-        return Movie.fromJson(movie);
-      });
-      return movies.toList();
+      String responseBody = utf8.decode(response.bodyBytes);
+      return compute(parseMovies,responseBody);
     } else {
       return Future.error("Can not request Recommendation data");
     }
@@ -84,15 +82,9 @@ class MovieService {
     String url = getURL("/movie/$id/similar");
     var response = await http.get(Uri.parse(url));
     var statusCode = response.statusCode;
-
-    String responseBody = utf8.decode(response.bodyBytes);
-    var json = jsonDecode(responseBody);
     if(statusCode == 200) {
-      var results = json['results'];
-      var movies = (results as List).map((movie) {
-        return Movie.fromJson(movie);
-      });
-      return movies.toList();
+      String responseBody = utf8.decode(response.bodyBytes);
+      return compute(parseMovies,responseBody);
     } else {
       return Future.error("Can not get Movie List data");
     }

@@ -42,32 +42,6 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-
-
-
-  @override
-  void initState() {
-    super.initState();
-      _sliverScrollController.addListener(() {
-        if (!_isPinned &&
-          _sliverScrollController.hasClients &&
-          _sliverScrollController.offset >= kToolbarHeight + 50) {
-
-          setState(() {
-            _isPinned = true;
-          });
-        } else if (_isPinned &&
-          _sliverScrollController.hasClients &&
-          _sliverScrollController.offset < kToolbarHeight + 50) {
-
-          setState(() {
-            _isPinned = false;
-          });
-        }
-      }
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
