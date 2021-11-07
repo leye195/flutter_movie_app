@@ -11,7 +11,7 @@ class Section extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-          margin: EdgeInsets.only(bottom: 8,left: 16),
+          margin: EdgeInsets.only(bottom: 8,left: 12),
           child:Text(
             this.title,
             textAlign: TextAlign.start,

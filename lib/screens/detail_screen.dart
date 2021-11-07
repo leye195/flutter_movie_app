@@ -78,6 +78,7 @@ class _DetailScreenState extends State<DetailScreen> {
           slivers: [
             SliverAppBar(
               pinned: true,
+              stretch: true,
               collapsedHeight: 60,
               expandedHeight: 200,
               flexibleSpace: LayoutBuilder(builder: (context,constraints) {
@@ -99,9 +100,9 @@ class _DetailScreenState extends State<DetailScreen> {
                 );
               }) 
             ),
-            SliverFillRemaining(
-              fillOverscroll: true,
-              child: Container(child:FutureBuilder(
+            SliverList(
+              delegate: SliverChildBuilderDelegate((context,index){
+                return Container(child:FutureBuilder(
                 future: Future.wait([
                   _service.requestMovie(arguments['id']),
                   _service.requestCredits(arguments['id']),
@@ -140,26 +141,21 @@ class _DetailScreenState extends State<DetailScreen> {
                           )
                         ),
                         Container(
-                          margin: EdgeInsets.only(top:16),
+                          margin: EdgeInsets.only(top:16,bottom: 16),
                           padding: EdgeInsets.only(top: 16),
                           child: new Section('Casting', SizedBox(child: _actorList(actors),height: 130,)),
                         ),
-                        _isPinned ?  
-                          Container(margin: EdgeInsets.only(top:16),child: Stack(children: [
-                            Container(child:new Section("Similar Movies", SizedBox(child: _contentList(similarMovies),height: 130))),
-                          ])): 
-                          Container(
-                            child:Icon(Icons.arrow_downward,color: Colors.black87),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black87),
-                              borderRadius: BorderRadius.circular(10)
-                            )
-                          ),
+                        if(similarMovies.length > 0) Container(                        
+                          margin: EdgeInsets.only(bottom: 32),
+                          padding: EdgeInsets.only(top: 16),
+                          child:new Section("Similar Movies", SizedBox(child: _contentList(similarMovies),height: 130))
+                        ),                          
                       ],
                     ));
                   }
                 },
-              ))
+              ));
+              },childCount: 1) 
             )
           ],
         ),
