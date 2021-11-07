@@ -30,7 +30,19 @@ class MovieTile extends StatelessWidget {
                   Expanded(
                     flex:2,
                     child: Container(
-                      child: Image.network(_movie.posterPath), 
+                      child: Image.network(
+                        _movie.posterPath,
+                        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                          if(loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value:loadingProgress.expectedTotalBytes != null ? 
+                              loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                              : null,
+                            ),
+                          );
+                        } ,
+                      ), 
                       width: 80,
                       height: 80
                     )
