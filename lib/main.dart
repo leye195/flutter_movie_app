@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tomato_movie/screens/detail_screen.dart';
 import 'package:tomato_movie/screens/favourite_screen.dart';
-import 'package:tomato_movie/screens/home_screen.dart';
+import 'package:tomato_movie/screens/main_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future main() async {
@@ -17,10 +17,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/': (context) => HomeScreen(),
+        '/': (context) => MainScreen(),
         '/detail': (context) => DetailScreen(),
         '/favourite': (context) => FavouriteScreen(),
-      }
+      },
     );
   }
 }

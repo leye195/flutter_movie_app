@@ -28,23 +28,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-  return Scaffold(
-      appBar: AppBar(title: Text('Tomato Movie')),
-      body: Container(child: Padding(padding: EdgeInsets.only(top: 25,bottom: 30),child: FutureBuilder(future: fetchMovieList() ,builder: (context,snapshot) {
-        if(!snapshot.hasData) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children:[CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey))]
-          );
-        } else {
-          final movies = snapshot.data;
-          return _movieList(movies);
-        }
-      }))),
+    return Scaffold(
+      body: Container(
+        child: Padding(
+          padding: EdgeInsets.only(top: 8,bottom: 16),
+          child: FutureBuilder(
+            future: fetchMovieList(),
+            builder: (context,snapshot) {
+              if(!snapshot.hasData) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children:[CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey))]
+                );
+              } else {
+                final movies = snapshot.data;
+                return _movieList(movies);
+              }
+            }
+          )
+        )
+      ),
       floatingActionButton: FloatingActionButton(child: Icon(Icons.favorite_border),onPressed: (){
         Navigator.pushNamed(context, "/favourite");
-      },),
+      }),
     );
   }
 }
