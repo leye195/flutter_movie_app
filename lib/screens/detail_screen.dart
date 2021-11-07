@@ -94,7 +94,7 @@ class _DetailScreenState extends State<DetailScreen> {
                     final actors = snapshot.data?[1] as List<Actor>;
                     final similarMovies = snapshot.data?[2] as List<Movie>;
                     final recommendations = snapshot.data?[3] as List<Movie>;
-                    print(similarMovies);
+
                     return Padding(padding: EdgeInsets.only(top:32),child:Column(
                       children: [
                         Padding(padding: EdgeInsets.only(top: 0),child: Container(child: Image.network(arguments['posterPath']),height:180)),

@@ -23,7 +23,6 @@ class MovieService {
     var statusCode = response.statusCode;
     if(statusCode == 200) {
       String responseBody = utf8.decode(response.bodyBytes);
-      print(compute(parseMovies,responseBody));
       return parseMovies(responseBody);
     } else {
       return Future.error("Can not get Movie List data");
