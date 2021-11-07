@@ -1,6 +1,6 @@
 # tomato_movie
 
-Simple Movie App by Flutter
+Movie App for practice Flutter
 
 **Screens**
 
