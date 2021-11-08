@@ -30,7 +30,13 @@ class MovieTile extends StatelessWidget {
                   Expanded(
                     flex:2,
                     child: Container(
-                      child: Image.network(
+                      child:  _movie.posterPath.toString().contains("null")?
+                      Container(
+                        height: 80,
+                        width: 80,
+                        color: Colors.blueGrey,
+                      ) :
+                      Image.network(
                         _movie.posterPath,
                         loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
                           if(loadingProgress == null) return child;
