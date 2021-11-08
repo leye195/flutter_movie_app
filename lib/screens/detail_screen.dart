@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'dart:async';
 import 'package:tomato_movie/models/Actor.dart';
 import 'package:tomato_movie/models/Movie.dart';
@@ -97,7 +98,13 @@ class _DetailScreenState extends State<DetailScreen> {
 
                     return Padding(padding: EdgeInsets.only(top:32),child:Column(
                       children: [
-                        Padding(padding: EdgeInsets.only(top: 0),child: Container(child: Image.network(arguments['posterPath']),height:180)),
+                        Padding(padding: EdgeInsets.only(top: 0),child: Container(
+                          child: FadeInImage.memoryNetwork(
+                            placeholder: kTransparentImage, 
+                            image: arguments['posterPath']
+                          ),
+                          height:180)
+                        ),
                         Text(arguments['title'],style:TextStyle(fontWeight: FontWeight.bold,fontSize: 18)),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
