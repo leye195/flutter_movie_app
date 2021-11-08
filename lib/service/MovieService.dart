@@ -15,12 +15,24 @@ List<Movie> parseMovies(String responseBody) {
 }
 
 class MovieService {
-  Future<List<Movie>> requestMovies() async {
-    
-    String url = getURL("/movie/now_playing");
-
+  Future<List<Movie>> searchMovies(String query) async {
+    String url = '${getURL("/search/movie")}&query=$query';
     var response = await http.get(Uri.parse(url));
     var statusCode = response.statusCode;
+
+    if(statusCode == 200) {
+      String responseBody = utf8.decode(response.bodyBytes);
+      return parseMovies(responseBody);
+    } else {
+      return Future.error("Can not get Movie List data");
+    }
+  }
+
+  Future<List<Movie>> requestMovies() async {
+    String url = getURL("/movie/now_playing");
+    var response = await http.get(Uri.parse(url));
+    var statusCode = response.statusCode;
+
     if(statusCode == 200) {
       String responseBody = utf8.decode(response.bodyBytes);
       return parseMovies(responseBody);
@@ -31,7 +43,6 @@ class MovieService {
 
   Future<Movie> requestMovie(int id)async {
     String url = getURL("/movie/$id");
-
     var response = await http.get(Uri.parse(url));
     var statusCode = response.statusCode;
 
@@ -69,6 +80,7 @@ class MovieService {
     String url = getURL('/movie/$id/recommendations');
     var response = await http.get(Uri.parse(url));
     var statusCode = response.statusCode;
+
     if(statusCode == 200) {
       String responseBody = utf8.decode(response.bodyBytes);
       return compute(parseMovies,responseBody);
@@ -81,6 +93,7 @@ class MovieService {
     String url = getURL("/movie/$id/similar");
     var response = await http.get(Uri.parse(url));
     var statusCode = response.statusCode;
+
     if(statusCode == 200) {
       String responseBody = utf8.decode(response.bodyBytes);
       return compute(parseMovies,responseBody);
