@@ -35,4 +35,15 @@ class Movie {
     'overview': overview,
     'companies': companies,
   };
+
+  Map<String,dynamic> toMap() => {
+    'id': id,
+    'title': title,
+    'posterpath': posterPath,
+    'backdropPath': backdropPath,
+    'releaseDate': releaseDate,
+    'tagline': tagline,
+    'voteAvg': voteAvg,
+    'overview': overview,
+  };
 }
