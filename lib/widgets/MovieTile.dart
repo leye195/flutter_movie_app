@@ -40,7 +40,7 @@ class _MovieTileState extends State<MovieTile> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(right: 10),
+      padding: EdgeInsets.only(right: 0),
       child:Card(
         child:InkWell(
           onTap: (){
@@ -69,21 +69,23 @@ class _MovieTileState extends State<MovieTile> {
                         width: 80,
                         color: Colors.blueGrey,
                       ) :
-                      Image.network(
-                        widget._movie.posterPath,
-                        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                          if(loadingProgress == null) return child;
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value:loadingProgress.expectedTotalBytes != null ? 
-                              loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                              : null,
-                            ),
-                          );
-                        } ,
-                      ), 
-                      width: 80,
-                      height: 80
+                      Container(
+                        child: Image.network(
+                          widget._movie.posterPath,
+                          loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                            if(loadingProgress == null) return child;
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value:loadingProgress.expectedTotalBytes != null ? 
+                                loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                                : null,
+                              ),
+                            );
+                          } ,
+                        ), 
+                        width: 80,
+                        height: 80
+                      )
                     )
                   ),
                   Expanded(flex:8,child: 
@@ -108,7 +110,7 @@ class _MovieTileState extends State<MovieTile> {
                   ]
                 ),
               ),
-              if(widget._from != 'favourite') Expanded(flex: 2,child: IconButton(color: isFavourite ? Colors.pink:Colors.black,icon: Icon(isFavourite?Icons.favorite:Icons.favorite_outline),onPressed: ()async{
+              if(widget._from != 'favourite') Expanded(flex: 1,child: IconButton(color: isFavourite ? Colors.pink:Colors.black,icon: Icon(isFavourite?Icons.favorite:Icons.favorite_outline),onPressed: ()async{
                  if(await isOnFavouriteList()) {
                    await movieDB.deleteMovie(widget._movie.id);
                    setState(() {
