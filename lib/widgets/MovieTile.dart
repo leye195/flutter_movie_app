@@ -4,16 +4,38 @@ import 'package:tomato_movie/models/Movie.dart';
 
 class MovieTile extends StatefulWidget {
   final Movie _movie;
+  final String _from;
 
-  const MovieTile(this._movie);
+  const MovieTile(this._movie,this._from);
 
   @override
   _MovieTileState createState() => _MovieTileState();
 }
 
 class _MovieTileState extends State<MovieTile> {
-  
+  final movieDB = new MovieDBHelper();
   bool isFavourite = false;
+
+  Future<bool> isOnFavouriteList() async {
+    final movie = await movieDB.getMovie(widget._movie.id);
+    if(movie.isNotEmpty) return true;
+    return false;
+  }
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    if(await isOnFavouriteList()) {
+        setState(() {
+          isFavourite = true;
+        });
+    } else {
+      setState(() {
+        isFavourite = false;
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -86,16 +108,19 @@ class _MovieTileState extends State<MovieTile> {
                   ]
                 ),
               ),
-              Expanded(flex: 2,child: IconButton(color: isFavourite ? Colors.pink:Colors.black,icon: Icon(isFavourite?Icons.favorite:Icons.favorite_outline),onPressed: ()async{
-                 final db =  new MovieDBHelper();
-                 final movie = await db.getMovie(widget._movie.id);
-                 if(movie.isEmpty) {
-                   await db.insertMovie(widget._movie);
+              if(widget._from != 'favourite') Expanded(flex: 2,child: IconButton(color: isFavourite ? Colors.pink:Colors.black,icon: Icon(isFavourite?Icons.favorite:Icons.favorite_outline),onPressed: ()async{
+                 if(await isOnFavouriteList()) {
+                   await movieDB.deleteMovie(widget._movie.id);
                    setState(() {
-                     isFavourite = true;
+                     isFavourite = false;
                    });
+                 } else {
+                  await movieDB.insertMovie(widget._movie);
+                  setState(() {
+                    isFavourite = true;
+                  });
                  }
-              }))
+              })),
             ]
           )
         )
@@ -103,4 +128,3 @@ class _MovieTileState extends State<MovieTile> {
     );
   }
 }
-

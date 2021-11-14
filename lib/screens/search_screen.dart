@@ -36,7 +36,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return ListView.builder(
       itemCount:movies.length,
       itemBuilder: (BuildContext context,int index) {
-        return MovieTile(movies[index]);
+        return MovieTile(movies[index],'search');
       },
       padding: EdgeInsets.all(1.5),
     );

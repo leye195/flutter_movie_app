@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListView.builder(
       itemCount:movies.length,
       itemBuilder: (BuildContext context,int index) {
-        return MovieTile(movies[index]);
+        return MovieTile(movies[index],'home');
       },
       padding: EdgeInsets.all(1.5),
     );
