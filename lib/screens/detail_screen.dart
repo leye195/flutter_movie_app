@@ -17,7 +17,6 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   var _service = MovieService();
   final ScrollController _sliverScrollController = ScrollController();
-  bool _isPinned = false;
 
   Widget _actorList(actors) {   
     return Container(
@@ -99,9 +98,12 @@ class _DetailScreenState extends State<DetailScreen> {
                     return Padding(padding: EdgeInsets.only(top:32),child:Column(
                       children: [
                         Padding(padding: EdgeInsets.only(top: 0),child: Container(
-                          child: FadeInImage.memoryNetwork(
-                            placeholder: kTransparentImage, 
-                            image: arguments['posterPath']
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16.0),
+                            child: FadeInImage.memoryNetwork(
+                              placeholder: kTransparentImage, 
+                              image: arguments['posterPath']
+                            )
                           ),
                           height:180)
                         ),
